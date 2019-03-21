@@ -1,26 +1,44 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './App.css';
-
+import Header from "./CommonComponent/Header"
+import SearchBar from './Components/SearchBar'
+import FoodCard from './Components/FoodCard'
+import {foodDetails} from './Api'
 class App extends Component {
+  state={
+    foodName:foodDetails,
+    items:[]
+  }
+  componentWillMount(){
+    this.setState({items: this.state.foodName})
+  }
+  handleChange(e){
+    let abc = this.state.foodName.filter(function(item){
+      return item.name.toLowerCase().search(e.target.value.toLowerCase()) !== -1;
+    });
+    this.setState({items: abc});
+  }
   render() {
+      let food = this.state.items.map((data)=>{
+        return (
+          <div className="col-md-4">
+                <FoodCard name={data.name}/>
+          </div>
+        )
+      })
+
     return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
+      
+        <React.Fragment>
+          <Header/>
+        <div className="container-fluid">
+        <SearchBar handleChange={this.handleChange.bind(this)}/>
+        <div className="row">
+         {food}
+        </div>
       </div>
+
+      </React.Fragment>
     );
   }
 }
